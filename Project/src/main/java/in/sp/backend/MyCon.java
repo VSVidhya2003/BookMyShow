@@ -1,73 +1,62 @@
 package in.sp.backend;
 
+
+import com.example.dao.UserDAO;
+import com.example.dao.UserDAOImpl;
+import com.example.dto.UserDTO;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import in.sp.entity.UserIno;
-import jakarta.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class MyCon {
-	
-	
-	@GetMapping("/register")
-	public String openregisterPage() {
-		return "register";
-	}
-
-@GetMapping("/login")
-public String openloginPage() {
-	return "login";
-}
-
-
-	
-@PostMapping("/registerdata")
-public String registerData(@RequestParam("name") String name,
-                           @RequestParam("password") String password,
-                           @RequestParam("email") String email,
-                           HttpSession session) {
-    // store values in session
-    session.setAttribute("name", name);
-    session.setAttribute("password", password);
-    session.setAttribute("email", email);
-
-    return "login"; // go to login.jsp
-}
-
-	
-@PostMapping("/logindata")
-public String PostData(@RequestParam("name") String name,
-                       @RequestParam("password") String password,
-                       @RequestParam("email") String email,
-                       HttpSession session,
-                       Model model) {
     
-    // get stored values from session
-    String regName = (String) session.getAttribute("name");
-    String regPassword = (String) session.getAttribute("password");
-    String regEmail = (String) session.getAttribute("email");
+    private UserDAO userDAO = new UserDAOImpl();
 
-    // validate
-    if (name.equals(regName) && password.equals(regPassword) && email.equals(regEmail)) {
-        return "profile"; 
-    } else {
-        model.addAttribute("error", "Invalid login credentials");
-        return "login"; 
+    @GetMapping("/register")
+    public String showRegisterForm() {
+        return "register"; // JSP name
     }
-}
 
-	
-	
-	
-	
-	
+    @PostMapping("/register")
+    public String register(@RequestParam("name") String name,
+                           @RequestParam("email") String email,
+                           @RequestParam("password") String password,
+                           Model model) {
+        UserDTO user = new UserDTO();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(password);
 
+        boolean success = userDAO.registerUser(user);
 
+        if (success) {
+            model.addAttribute("msg", "Registration successful!");
+            return "login";
+        } else {
+            model.addAttribute("msg", "Registration failed!");
+            return "register";
+        }
+    }
 
+    @GetMapping("/login")
+    public String showLoginForm() {
+        return "login"; // JSP name
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestParam("email") String email,
+                        @RequestParam("password") String password,
+                        Model model) {
+        UserDTO user = userDAO.loginUser(email, password);
+
+        if (user != null) {
+            model.addAttribute("name", user.getName());
+            return "welcome"; // JSP page
+        } else {
+            model.addAttribute("msg", "Invalid email or password!");
+            return "login";
+        }
+    }
 }

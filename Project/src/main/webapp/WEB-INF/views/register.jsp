@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1"%> <%@page isELIgnored = "false" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,18 +9,16 @@
 <body>
 
 
-<form action = "registerdata" method = "post">
-
-  name<input type= "text" name="name" />
-  password<input type= "text" name="password" />
-  email<input type="text" name="email"/>
-  
-  
-  <input type= "submit" value="submit" />
 
 
-
+<form action="register" method="post">
+    Name: <input type="text" name="name"><br>
+    Email: <input type="email" name="email"><br>
+    Password: <input type="password" name="password"><br>
+    <input type="submit" value="Register">
 </form>
+<p>${msg}</p>
+
 
 </body>
 </html>
