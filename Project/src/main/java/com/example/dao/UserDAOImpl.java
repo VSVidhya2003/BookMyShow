@@ -13,7 +13,7 @@ public class UserDAOImpl implements UserDAO {
 
     private static final String URL = "jdbc:mysql://localhost:3306/userdb";
     private static final String USER = "root";   
-    private static final String PASS = "root";   
+    private static final String PASS = "root";  
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     static {
@@ -75,5 +75,4 @@ public class UserDAOImpl implements UserDAO {
         return user;
     }
 }
-
        
